@@ -7,11 +7,14 @@ const dedent = require('dedent');
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
 const auddKey = process.env.AUDD_API_KEY;
 const onlineconvertKey = process.env.ONLINECONVERT_API_KEY;
+const masterId = process.env.TELEGRAM_MASTER_USER_ID;
 
 const bot = new TelegramBot(telegramToken, { polling: true });
 
 bot.on('message', async msg => {
   const chatId = msg.chat.id;
+
+  console.log(`New message from ${chatId} OK!`);
 
   if (msg.voice) {
     const { file_id } = msg.voice;
@@ -116,13 +119,26 @@ bot.on('message', async msg => {
             `;
 
             bot.sendMessage(chatId, res, { parse_mode: 'Markdown' });
+            bot.sendMessage(
+              masterId,
+              `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! And...`
+            );
+            bot.sendMessage(masterId, res, { parse_mode: 'Markdown' });
           } else {
             bot.sendMessage(chatId, "I couldn't find any similar song. 🙁");
+            bot.sendMessage(
+              masterId,
+              `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But I couldn't find anything. 🙁`
+            );
           }
         } catch (e) {
           bot.sendMessage(
             chatId,
             "Hm, I'm having trouble identifying this song... Try recording again! 🤔"
+          );
+          bot.sendMessage(
+            masterId,
+            `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But I had trouble identifying that song... 🤔`
           );
 
           console.log(e.message);
@@ -132,6 +148,10 @@ bot.on('message', async msg => {
           chatId,
           'Sorry, something went wrong with the request. Please try again later! 🤒'
         );
+        bot.sendMessage(
+          masterId,
+          `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But something went wrong with the request. 🤒`
+        );
 
         console.log(e.message);
       }
@@ -139,6 +159,10 @@ bot.on('message', async msg => {
       bot.sendMessage(
         chatId,
         'Sorry, something went wrong with the request. Please try again later! 🤒'
+      );
+      bot.sendMessage(
+        masterId,
+        `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But something went wrong with the request. 🤒`
       );
 
       console.log(e.message);
@@ -152,7 +176,15 @@ bot.on('message', async msg => {
       Record any currently playing song. I'll listen to it, and look up as much information as possible about it! 🎵
     `
     );
+    bot.sendMessage(
+      masterId,
+      `Hey! ${msg.from.first_name} (@${msg.from.username}) activated me! 😁`
+    );
   } else {
     bot.sendMessage(chatId, 'Sorry, I can only handle audio files! 🔊');
+    bot.sendMessage(
+      masterId,
+      `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But it was not an audio file. 🥴`
+    );
   }
 });

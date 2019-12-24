@@ -1,6 +1,6 @@
 {
   "name": "hollands-sound-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A telegram bot that fetches music information based on a voice message",
   "main": "index.js",
   "scripts": {
