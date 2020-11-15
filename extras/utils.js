@@ -67,7 +67,7 @@ exports.getConvertedFile = async (jobId) => {
   }
 };
 
-exports.indentifySong = async (url, bot) => {
+exports.indentifySong = async (url) => {
   const { data } = await axios.post("https://api.audd.io/", {
     url,
     return: "timecode,apple_music,deezer,spotify",
@@ -83,7 +83,7 @@ exports.indentifySong = async (url, bot) => {
   return songData;
 };
 
-exports.buildResponseMessage = async ({ songData, chatId }) => {
+exports.buildResponseMessage = async ({ songData }) => {
   const res = dedent`
     I found something! 🥳
 
