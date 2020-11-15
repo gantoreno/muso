@@ -1,17 +1,14 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const TelegramBot = require('node-telegram-bot-api');
-const axios = require('axios');
-const dedent = require('dedent');
+const TelegramBot = require("node-telegram-bot-api");
+const axios = require("axios");
+const dedent = require("dedent");
 
-const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-const auddKey = process.env.AUDD_API_KEY;
-const onlineconvertKey = process.env.ONLINECONVERT_API_KEY;
-const masterId = process.env.TELEGRAM_MASTER_USER_ID;
+const { TELEGRAM_BOT_TOKEN, AUDD_API_KEY, ONLINECONVERT_API_KEY } = process.env;
 
-const bot = new TelegramBot(telegramToken, { polling: true });
+const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
 
-bot.on('message', async msg => {
+bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
 
   console.log(`New message from ${chatId} OK!`);
@@ -19,15 +16,15 @@ bot.on('message', async msg => {
   if (msg.voice) {
     const { file_id } = msg.voice;
 
-    bot.sendMessage(chatId, 'Audio received! Processing... 🎧');
+    bot.sendMessage(chatId, "Audio received! Processing... 🎧");
 
     try {
       const { data } = await axios.get(
-        `https://api.telegram.org/bot${telegramToken}/getFile?file_id=${file_id}`
+        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getFile?file_id=${file_id}`
       );
       const { file_path } = await data.result;
 
-      await console.log('Extraction OK! ' + file_path);
+      await console.log("Extraction OK! " + file_path);
 
       try {
         const { data } = await axios.post(
@@ -35,29 +32,29 @@ bot.on('message', async msg => {
           {
             input: [
               {
-                type: 'remote',
-                source: `https://api.telegram.org/file/bot${telegramToken}/${file_path}`,
+                type: "remote",
+                source: `https://api.telegram.org/file/bot${TELEGRAM_BOT_TOKEN}/${file_path}`,
               },
             ],
             conversion: [
               {
-                target: 'mp3',
+                target: "mp3",
               },
             ],
           },
           {
             headers: {
-              'x-oc-api-key': onlineconvertKey,
+              "x-oc-api-key": ONLINECONVERT_API_KEY,
             },
           }
         );
 
         const { id } = await data;
 
-        await console.log('Upload OK! ' + id);
+        await console.log("Upload OK! " + id);
 
         let converted = false;
-        let uri = '';
+        let uri = "";
 
         while (!converted) {
           try {
@@ -65,7 +62,7 @@ bot.on('message', async msg => {
               `https://api2.online-convert.com/jobs/${id}`,
               {
                 headers: {
-                  'x-oc-api-key': onlineconvertKey,
+                  "x-oc-api-key": ONLINECONVERT_API_KEY,
                 },
               }
             );
@@ -80,18 +77,18 @@ bot.on('message', async msg => {
           }
         }
 
-        console.log('Conversion OK! ' + uri);
+        console.log("Conversion OK! " + uri);
 
         try {
-          const { data } = await axios.post('https://api.audd.io/', {
+          const { data } = await axios.post("https://api.audd.io/", {
             url: uri,
-            return: 'timecode,apple_music,deezer,spotify',
-            api_token: auddKey,
+            return: "timecode,apple_music,deezer,spotify",
+            api_token: AUDD_API_KEY,
           });
 
           await console.log(data);
 
-          if (data.status === 'success' && data.result) {
+          if (data.status === "success" && data.result) {
             const res = dedent`
               I found something! 🥳
 
@@ -118,56 +115,29 @@ bot.on('message', async msg => {
               Published by ${data.result.label}
             `;
 
-            bot.sendMessage(chatId, res, { parse_mode: 'Markdown' });
-            bot.sendMessage(
-              masterId,
-              `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! And...`
-            );
-            bot.sendMessage(masterId, res, { parse_mode: 'Markdown' });
+            bot.sendMessage(chatId, res, { parse_mode: "Markdown" });
           } else {
             bot.sendMessage(chatId, "I couldn't find any similar song. 🙁");
-            bot.sendMessage(
-              masterId,
-              `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But I couldn't find anything. 🙁`
-            );
           }
         } catch (e) {
           bot.sendMessage(
             chatId,
             "Hm, I'm having trouble identifying this song... Try recording again! 🤔"
           );
-          bot.sendMessage(
-            masterId,
-            `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But I had trouble identifying that song... 🤔`
-          );
-
-          console.log(e.message);
         }
       } catch (e) {
         bot.sendMessage(
           chatId,
-          'Sorry, something went wrong with the request. Please try again later! 🤒'
+          "Sorry, something went wrong with the request. Please try again later! 🤒"
         );
-        bot.sendMessage(
-          masterId,
-          `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But something went wrong with the request. 🤒`
-        );
-
-        console.log(e.message);
       }
     } catch (e) {
       bot.sendMessage(
         chatId,
-        'Sorry, something went wrong with the request. Please try again later! 🤒'
+        "Sorry, something went wrong with the request. Please try again later! 🤒"
       );
-      bot.sendMessage(
-        masterId,
-        `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But something went wrong with the request. 🤒`
-      );
-
-      console.log(e.message);
     }
-  } else if (msg.text === '/start') {
+  } else if (msg.text === "/start") {
     bot.sendMessage(
       chatId,
       dedent`
@@ -176,15 +146,7 @@ bot.on('message', async msg => {
       Record any currently playing song. I'll listen to it, and look up as much information as possible about it! 🎵
     `
     );
-    bot.sendMessage(
-      masterId,
-      `Hey! ${msg.from.first_name} (@${msg.from.username}) activated me! 😁`
-    );
   } else {
-    bot.sendMessage(chatId, 'Sorry, I can only handle audio files! 🔊');
-    bot.sendMessage(
-      masterId,
-      `Hey! ${msg.from.first_name} (@${msg.from.username}) made a search! But it was not an audio file. 🥴`
-    );
+    bot.sendMessage(chatId, "Sorry, I can only handle audio files! 🔊");
   }
 });
