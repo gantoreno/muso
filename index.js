@@ -49,10 +49,10 @@ bot.on("message", async (msg) => {
     bot.sendMessage(
       chatId,
       dedent`
-      Hi, ${msg.from.first_name}! Welcome to the Sound Bot. 😁
+        Hi, ${msg.from.first_name}! Welcome to the Sound Bot. 😁
 
-      Record any currently playing song. I'll listen to it, and look up as much information as possible about it! 🎵
-    `
+        Record any currently playing song. I'll listen to it, and look up as much information as possible about it! 🎵
+      `
     );
 
     return;
