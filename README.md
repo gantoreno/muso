@@ -1,6 +1,6 @@
 # Shagram Bot
 
-A simple Telegram Bbt that listens music from voice messages, and identifyes the current playing song.
+A simple Telegram bot that listens music from voice messages, and identifyes the current playing song.
 
 This bot is based on the [Node Telegram Bot API](https://github.com/yagop/node-telegram-bot-api) by [yagop](https://github.com/yagop), be sure to check them out!
 
