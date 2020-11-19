@@ -1,4 +1,4 @@
-# Shagram
+# Shagram Bot
 
 A simple Telegram Bbt that listens music from voice messages, and identifyes the current playing song.
 
