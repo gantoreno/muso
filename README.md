@@ -27,8 +27,8 @@ NOTE: The Online-Convert API allows only a certain ammount of conversions for th
 To start working with this project, first clone the repo:
 
 ```sh
-$ git clone https://github.com/hollandsgabe/hollands-sound-bot.git # Or fork the project
-$ cd hollands-sound-bot
+$ git clone https://github.com/gantoreno/shagram-bot.git # Or fork the project
+$ cd shagram-bot
 ```
 
 Install all the dependencies with `npm`
