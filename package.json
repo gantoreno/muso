@@ -11,7 +11,7 @@
   "author": "Gabriel Moreno",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "dedent": "^0.7.0",
     "dotenv": "^8.2.0",
     "node-telegram-bot-api": "^0.40.0"
