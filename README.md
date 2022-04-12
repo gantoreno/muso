@@ -1,4 +1,4 @@
-# Shagram Bot
+# Muso
 
 A simple Telegram bot that listens music from voice messages, and identifyes the current playing song.
 
@@ -27,8 +27,8 @@ NOTE: The Online-Convert API allows only a certain ammount of conversions for th
 To start working with this project, first clone the repo:
 
 ```sh
-$ git clone https://github.com/gantoreno/shagram-bot.git # Or fork the project
-$ cd shagram-bot
+$ git clone https://github.com/gantoreno/muso.git # Or fork the project
+$ cd muso
 ```
 
 Install all the dependencies with `npm`
